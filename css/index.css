@@ -22,11 +22,11 @@ body {
 }
 
 table {
-  border: 0.5rem solid black;
+  border: 0.5rem solid rgb(43, 40, 40);
 }
 
 td {
-  background-color: black;
+  background-color: rgb(43, 40, 40);
   border: 0.1rem solid white;
   font-size: 5rem;
   text-align: center;
@@ -37,7 +37,7 @@ td {
 }
 
 button {
-  background-color: black;
+  background-color: rgb(43, 40, 40);
   color: #ffffff;
   font-size: 1rem;
   padding: 0.5rem;

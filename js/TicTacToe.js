@@ -16,28 +16,26 @@ class TicTacToeBoard {
     this.state[row][col] = player;
   }
 
-  isEnd() {
+  getWinner() {
     // check diagonal
-
     let temp = this.state[0][0];
     if (temp !== BoardCell.BLANK) {
-      for (let i = 1; i < BOARD_SIZE; i++) {
+      for (let i = 1; i < BOARD_SIZE; i++)
         if (this.state[i][i] !== temp) {
           temp = null;
           break;
         }
-      }
       if (temp) return temp;
     }
+
     // check backward diagonal
     temp = this.state[0][BOARD_SIZE - 1];
     if (temp !== BoardCell.BLANK) {
-      for (let i = 1; i < BOARD_SIZE; i++) {
+      for (let i = 1; i < BOARD_SIZE; i++)
         if (this.state[i][BOARD_SIZE - i - 1] !== temp) {
           temp = null;
           break;
         }
-      }
       if (temp) return temp;
     }
 
@@ -66,6 +64,6 @@ class TicTacToeBoard {
         if (temp) return temp;
       }
     }
-    return false;
+    return null;
   }
 }
