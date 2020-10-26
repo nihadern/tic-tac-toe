@@ -1,5 +1,7 @@
-var currentPlayer = BoardCell.O;
+var currentPlayer = Players.O;
 var ticTacToeBoard = new TicTacToeBoard();
+var playWithAgent = true;
+var agent = new TicTacToeAgent(nextPlayer(currentPlayer));
 
 function displayMessage(message, success = true, messageBoxId = "status") {
   const messageBox = document.getElementById(messageBoxId);
@@ -7,8 +9,15 @@ function displayMessage(message, success = true, messageBoxId = "status") {
   messageBox.innerText = message;
 }
 
+function renderMove(row, col, player) {
+  const cell = document.getElementById(`${row},${col}`);
+  cell.innerText = player;
+}
+
 function onClickCell(e) {
   const clickedCell = e.target;
+  console.log("Player turn!");
+
   if (clickedCell.innerText === "") {
     clickedCell.innerText = currentPlayer;
     ticTacToeBoard.addMove(
@@ -16,10 +25,17 @@ function onClickCell(e) {
       clickedCell.getAttribute("col"),
       currentPlayer
     );
-    console.log(ticTacToeBoard.state);
     let winner = ticTacToeBoard.getWinner();
     if (winner) displayMessage(`${winner} has won!`);
-    currentPlayer = currentPlayer === BoardCell.X ? BoardCell.O : BoardCell.X;
+    else if (playWithAgent) {
+      currentPlayer = nextPlayer(currentPlayer);
+      const [row, col] = agent.getBestMove(ticTacToeBoard);
+      ticTacToeBoard.addMove(row, col, currentPlayer);
+      renderMove(row, col, currentPlayer);
+      let winner = ticTacToeBoard.getWinner();
+      if (winner) displayMessage(`${winner} has won!`);
+      currentPlayer = nextPlayer(currentPlayer);
+    }
   }
 }
 
