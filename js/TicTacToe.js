@@ -23,18 +23,17 @@ class TicTacToeBoard {
     this.state[row][col] = player;
   }
 
-  getChildMoves(nextPlayer) {
-    const children = [];
+  clearMove(row, col) {
+    this.state[row][col] = Players.BLANK;
+  }
+
+  getChildMoves() {
     const moves = [];
     for (let i = 0; i < BOARD_SIZE; i++)
       for (let j = 0; j < BOARD_SIZE; j++)
-        if (this.state[i][j] === Players.BLANK) {
-          const childState = this.copyState();
-          childState[i][j] = nextPlayer;
-          moves.push([i, j]);
-          children.push(new TicTacToeBoard(childState));
-        }
-    return [children, moves];
+        if (this.state[i][j] === Players.BLANK) moves.push([i, j]);
+
+    return moves;
   }
 
   copyState() {
@@ -44,6 +43,13 @@ class TicTacToeBoard {
       for (let j = 0; j < BOARD_SIZE; j++) copy[i][j] = this.state[i][j];
     }
     return copy;
+  }
+
+  isPlayable() {
+    for (let i = 0; i < BOARD_SIZE; i++)
+      for (let j = 0; j < BOARD_SIZE; j++)
+        if (this.state[i][j] === Players.BLANK) return true;
+    return false;
   }
 
   getWinner() {
@@ -105,24 +111,21 @@ class TicTacToeAgent {
 
   getBestMove(ticTacToeBoard) {
     // get all possible
-    let [possibleStates, moves] = ticTacToeBoard.getChildMoves(this.playerTag);
-    if (possibleStates.length > 0) {
-      let maxValue = this.miniMax(
-        possibleStates[0],
-        0,
-        nextPlayer(this.playerTag),
-        Number.MIN_VALUE,
-        Number.MAX_VALUE
-      );
-      let bestMove = moves[0];
-      for (let i = 1; i < possibleStates.length; i++) {
+    let moves = ticTacToeBoard.getChildMoves();
+    if (moves.length > 0) {
+      let maxValue = -Number.MAX_VALUE;
+      let bestMove = null;
+      for (let i = 0; i < moves.length; i++) {
+        const [row, col] = moves[i];
+        ticTacToeBoard.addMove(row, col, this.playerTag);
         const moveValue = this.miniMax(
-          possibleStates[i],
+          ticTacToeBoard,
           0,
           nextPlayer(this.playerTag),
-          Number.MIN_VALUE,
+          -Number.MAX_VALUE,
           Number.MAX_VALUE
         );
+        ticTacToeBoard.clearMove(row, col);
         if (moveValue > maxValue) {
           maxValue = moveValue;
           bestMove = moves[i];
@@ -139,59 +142,52 @@ class TicTacToeAgent {
     if (winner) return winner === this.playerTag ? SCORE : -SCORE;
 
     // get all possible moves
-    const [possibleStates, moves] = ticTacToeBoard.getChildMoves(playerTag);
+    const moves = ticTacToeBoard.getChildMoves();
     if (moves.length === 0) return 0;
 
     // if the current player is agent, maximize scores
     if (playerTag === this.playerTag) {
-      let maxValue = this.miniMax(
-        possibleStates[0],
-        depth + 1,
-        nextPlayer(playerTag),
-        alpha,
-        beta
-      );
-
-      for (let i = 1; i < possibleStates.length; i++) {
-        if (maxValue > alpha) alpha = maxValue;
-        // beta cutoff
-        if (alpha >= beta) break;
+      let maxValue = -Number.MAX_VALUE;
+      for (let i = 0; i < moves.length; i++) {
+        const [row, col] = moves[i];
+        ticTacToeBoard.addMove(row, col, playerTag);
         maxValue = Math.max(
           maxValue,
           this.miniMax(
-            possibleStates[i],
+            ticTacToeBoard,
             depth + 1,
             nextPlayer(playerTag),
             alpha,
             beta
           )
         );
+        ticTacToeBoard.clearMove(row, col);
+        alpha = Math.max(alpha, maxValue);
+        // beta cutoff
+        if (alpha >= beta) break;
       }
       return maxValue;
     }
     // if the current player is not agent, minimize scores
     else {
-      let minValue = this.miniMax(
-        possibleStates[0],
-        depth + 1,
-        nextPlayer(playerTag),
-        alpha,
-        beta
-      );
-      for (let i = 1; i < possibleStates.length; i++) {
-        if (minValue < beta) beta = minValue;
-        // alpha cut-off
-        if (alpha >= beta) break;
+      let minValue = Number.MAX_VALUE;
+      for (let i = 0; i < moves.length; i++) {
+        const [row, col] = moves[i];
+        ticTacToeBoard.addMove(row, col, playerTag);
         minValue = Math.min(
           minValue,
           this.miniMax(
-            possibleStates[i],
+            ticTacToeBoard,
             depth + 1,
             nextPlayer(playerTag),
             alpha,
             beta
           )
         );
+        ticTacToeBoard.clearMove(row, col);
+        beta = Math.min(beta, minValue);
+        // alpha cut-off
+        if (alpha >= beta) break;
       }
       return minValue;
     }

@@ -8,6 +8,12 @@ th {
   width: 50%;
 }
 
+.status {
+  font-size: 3rem;
+  margin: 2rem;
+  width: fit-content;
+}
+
 body {
   padding-top: 2rem;
   padding-left: 3rem;

@@ -1,7 +1,13 @@
-var currentPlayer = Players.O;
+var currentPlayer = Players.X;
 var ticTacToeBoard = new TicTacToeBoard();
 var playWithAgent = true;
 var agent = new TicTacToeAgent(nextPlayer(currentPlayer));
+function toggleAI(buttonID = "ai-toggle") {
+  const button = document.getElementById(buttonID);
+  if (playWithAgent) button.innerText = "Play against Human vs. AI";
+  else button.innerText = "Play Human vs. Human";
+  playWithAgent = !playWithAgent;
+}
 
 function displayMessage(message, success = true, messageBoxId = "status") {
   const messageBox = document.getElementById(messageBoxId);
@@ -26,7 +32,9 @@ function onClickCell(e) {
       currentPlayer
     );
     let winner = ticTacToeBoard.getWinner();
+    let playable = ticTacToeBoard.isPlayable();
     if (winner) displayMessage(`${winner} has won!`);
+    else if (!playable) displayMessage(`It's a draw!`);
     else if (playWithAgent) {
       currentPlayer = nextPlayer(currentPlayer);
       const [row, col] = agent.getBestMove(ticTacToeBoard);
@@ -34,14 +42,15 @@ function onClickCell(e) {
       renderMove(row, col, currentPlayer);
       let winner = ticTacToeBoard.getWinner();
       if (winner) displayMessage(`${winner} has won!`);
-      currentPlayer = nextPlayer(currentPlayer);
     }
+    currentPlayer = nextPlayer(currentPlayer);
   }
 }
 
 function renderBoard() {
   ticTacToeBoard = new TicTacToeBoard();
   displayMessage("");
+  currentPlayer = Players.X;
   const board = document.getElementById("board");
   while (board.firstChild) {
     board.removeChild(board.firstChild);
