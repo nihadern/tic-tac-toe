@@ -1,13 +1,13 @@
 const Players = {
-  X: "X",
-  O: "O",
-  BLANK: " ",
+  X: 1,
+  O: 2,
+  BLANK: 3,
 };
 function nextPlayer(currentPlayer) {
   return currentPlayer === Players.X ? Players.O : Players.X;
 }
 const SCORE = 1;
-const BOARD_SIZE = 3;
+let BOARD_SIZE = 4;
 
 class TicTacToeBoard {
   constructor(state) {
@@ -126,6 +126,7 @@ class TicTacToeAgent {
           Number.MAX_VALUE
         );
         ticTacToeBoard.clearMove(row, col);
+        console.log(row, col);
         if (moveValue > maxValue) {
           maxValue = moveValue;
           bestMove = moves[i];

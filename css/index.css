@@ -41,7 +41,12 @@ td {
   color: #ffffff;
   border-radius: 0.1rem 0.1rem 0.1rem 0.1rem;
 }
-
+td:hover {
+  background-color: rgb(73, 73, 73);
+}
+button:hover {
+  background-color: rgb(73, 73, 73);
+}
 button {
   background-color: rgb(43, 40, 40);
   color: #ffffff;
