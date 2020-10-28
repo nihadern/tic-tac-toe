@@ -17,9 +17,21 @@
             <div class="status" id="status"></div>
         </div>
     </div>
-    <button onclick="renderBoard()">New Game</button>
-    <button id="ai-toggle" onclick="toggleAI()">Play Human vs. Human</button>
-    <button id="size-toggle" onclick="toggleSize()">Play 3 x 3</button>
+    <div class="row">
+
+        <button onclick="renderBoard()">New Game</button>
+        <button id="ai-toggle" onclick="toggleAI()">Play Human vs. Human</button>
+        <button id="size-toggle" onclick="toggleSize()">Play 3 x 3</button>
+    </div>
+    <div class="row">
+        Difficulty/Depth:
+        <select name="difficulty" id="difficulty" onchange="depthLimit()">
+            <option value=5>5</option>
+            <option value=20>20</option>
+            <option value=30>30</option>
+            <option value="inf">Infinite</option>
+        </select>
+    </div>
 
 
 

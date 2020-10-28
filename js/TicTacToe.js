@@ -6,6 +6,7 @@ const Players = {
 function nextPlayer(currentPlayer) {
   return currentPlayer === Players.X ? Players.O : Players.X;
 }
+
 const SCORE = 1;
 let BOARD_SIZE = 4;
 
@@ -105,8 +106,9 @@ class TicTacToeBoard {
 }
 
 class TicTacToeAgent {
-  constructor(playerTag) {
+  constructor(playerTag, depthLimit = Number.MAX_VALUE) {
     this.playerTag = playerTag;
+    this.depthLimit = depthLimit;
   }
 
   getBestMove(ticTacToeBoard) {
@@ -137,6 +139,8 @@ class TicTacToeAgent {
   }
 
   miniMax(ticTacToeBoard, depth, playerTag, alpha, beta) {
+    // check for depth limit
+    if (depth > this.depthLimit) return 0;
     const winner = ticTacToeBoard.getWinner();
     // if there is a winner return positive score if agent wins
     // or negative score if opponent wins

@@ -8,6 +8,15 @@ const playerSymbols = {
   [Players.O]: "O",
 };
 
+function depthLimit(selectionID = "difficulty") {
+  const depthSelect = document.getElementById(selectionID);
+  const depth = depthSelect.options[depthSelect.selectedIndex].value;
+  agent = new TicTacToeAgent(
+    nextPlayer(currentPlayer),
+    depth === "inf" ? Number.MAX_VALUE : depth
+  );
+}
+
 function toggleSize(buttonID = "size-toggle") {
   const button = document.getElementById(buttonID);
   if (BOARD_SIZE === 4) {
@@ -69,6 +78,7 @@ function onClickCell(e) {
 
 function renderBoard() {
   ticTacToeBoard = new TicTacToeBoard();
+  depthLimit();
   displayMessage("");
   currentPlayer = Players.X;
   const board = document.getElementById("board");
